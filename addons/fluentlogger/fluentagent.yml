@@ -5,13 +5,13 @@ metadata:
   namespace: kube-system
   labels:
     k8s-app: fluentlogger-agent
-    version: v0.0.4
+    version: v0.0.6
 spec:
   template:
     metadata:
       labels:
         k8s-app: fluentlogger-agent
-        version: v0.0.4
+        version: v0.0.6
     spec:
       terminationGracePeriodSeconds: 10
       tolerations:
@@ -19,10 +19,12 @@ spec:
           effect: NoSchedule
       containers:
         - name: fluentlogger-agent
-          image: coldog/fluentlogger-agent:0.0.4
+          image: coldog/fluentlogger-agent:0.0.6
           env:
             - name: ROUTE_URIS
               value: fluentd-tcp://10.3.0.50:24224
+            - name: INACTIVITY_TIMEOUT
+              value: 1m
           resources:
             limits:
               memory: 100Mi

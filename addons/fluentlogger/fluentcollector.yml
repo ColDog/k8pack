@@ -11,19 +11,23 @@ spec:
   selector:
     matchLabels:
       k8s-app: fluentlogger-collector
-      version: v0.0.4
+      version: v0.0.6
   template:
     metadata:
       labels:
         k8s-app: fluentlogger-collector
-        version: v0.0.4
+        version: v0.0.6
     spec:
       containers:
       - name: fluentlogger-collector
-        image: coldog/fluentlogger-collector:0.0.4
+        image: coldog/fluentlogger-collector:0.0.6
         env:
-          - name:  LOGSPOUT
+          - name: LOGSPOUT
             value: ignore
+          - name: CLUSTER_NAME
+            value: default
+          - name:  AWS_REGION
+            value: us-west-2
         ports:
         - containerPort: 24224
           name: ingestor
