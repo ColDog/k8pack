@@ -73,9 +73,7 @@ resource "aws_iam_role_policy" "master_policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "logs:DescribeLogStreams"
+        "logs:*",
       ],
       "Resource": [
         "arn:aws:logs:*:*:log-group:*",
