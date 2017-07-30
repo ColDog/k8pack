@@ -93,6 +93,6 @@ variable "api_service_ip" {
 }
 
 variable "dns_service_ip" {
-  default     = "10.3.0.10"
-  description = "The VIP (Virtual IP) address of the cluster DNS service. This IP must be in the range of the SERVICE_IP_RANGE and cannot be the first IP in the range. This same IP must be configured on all worker nodes to enable DNS service discovery."
+  default     = ""
+  description = "The VIP (Virtual IP) address of the cluster DNS service. This IP must be in the range of the SERVICE_IP_RANGE and cannot be the first IP in the range. This same IP must be configured on all worker nodes to enable DNS service discovery. This should be left blank if you are not going to install cluster dns."
 }
