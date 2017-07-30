@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: fluentlogger-agent
+  namespace: kube-system
+  labels:
+    k8s-app: fluentlogger-agent
+    version: v0.0.4
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentlogger-agent
+        version: v0.0.4
+    spec:
+      terminationGracePeriodSeconds: 10
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      containers:
+        - name: fluentlogger-agent
+          image: coldog/fluentlogger-agent:0.0.4
+          env:
+            - name: ROUTE_URIS
+              value: fluentd-tcp://10.3.0.50:24224
+          resources:
+            limits:
+              memory: 100Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - name: docker-daemon
+              mountPath: /var/run/docker.sock
+      volumes:
+        - name: docker-daemon
+          hostPath:
+            path: /var/run/docker.sock

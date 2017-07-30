@@ -1,0 +1,9 @@
+# Editors.
+.vscode
+
+# Generated secrets.
+*.pem
+*.kubeconfig
+
+# Build binaries.
+kubesetup

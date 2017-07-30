@@ -1,0 +1,25 @@
+[Unit]
+Description=KubernetesKubelet
+
+[Service]
+ExecStart=/opt/bin/kubelet \
+    --api-servers=https://{{ .APIHost }} \
+    --cluster-domain=cluster.local \
+    --cluster-dns={{ .DNSServiceIP }} \
+    --allow-privileged=true \
+    --hostname-override={{ .LocalIPv4 }} \
+    --container-runtime=docker \
+    --network-plugin=cni \
+    --kubeconfig=/etc/kubernetes/secrets/kubelet.kubeconfig \
+    --serialize-image-pulls=false \
+    --register-node=true \
+    --pod-manifest-path=/etc/kubernetes/manifests/ \
+    {{ .KubeletTaints }} \
+    --tls-cert-file=/etc/kubernetes/secrets/kubelet.pem \
+    --tls-private-key-file=/etc/kubernetes/secrets/kubelet-key.pem
+Restart=on-failure
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

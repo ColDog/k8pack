@@ -1,0 +1,30 @@
+[Unit]
+Description=KubernetesControllerManager
+
+[Service]
+EnvironmentFile=/etc/kubernetes/versions.env
+ExecStartPre=-/usr/bin/docker stop controllermanager.service
+ExecStartPre=-/usr/bin/docker rm controllermanager.service
+ExecStart=/usr/bin/docker run --name=controllermanager.service \
+    --net=host \
+    -v /etc/kubernetes/secrets:/etc/kubernetes/secrets \
+    ${HYPERKUBE_IMAGE} \
+    /hyperkube \
+    controller-manager \
+    --address=0.0.0.0 \
+    --allocate-node-cidrs=true \
+    --cluster-cidr={{ .PodCidr }} \
+    --service-cluster-ip-range={{ .ServiceCidr }} \
+    --service-account-private-key-file=/etc/kubernetes/secrets/serviceaccount-key.pem \
+    --kubeconfig=/etc/kubernetes/secrets/controllermanager.kubeconfig \
+    --cluster-name={{ .ClusterName }} \
+    --leader-elect=true \
+    --root-ca-file=/etc/kubernetes/secrets/controllermanager-ca.pem \
+    --v=2
+ExecStop=/usr/bin/docker stop controllermanager.service
+Restart=on-failure
+RestartSec=15
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

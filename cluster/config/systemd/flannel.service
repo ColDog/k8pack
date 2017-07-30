@@ -1,0 +1,17 @@
+[Unit]
+Description=FlannelDaemon
+
+[Service]
+ExecStartPre=-/usr/bin/etcdctl \
+    --endpoints={{ .ETCDNodeURLs }} \
+    set /flanneld/{{ .ClusterName }}/config '{"Network":"{{ .PodCidr }}","Backend":{"Type":"vxlan"}}'
+ExecStart=/opt/bin/flanneld \
+    --iface={{ .LocalIPv4 }} \
+    --etcd-endpoints={{ .ETCDNodeURLs }} \
+    --etcd-prefix=/flanneld/{{ .ClusterName }}
+Restart=on-failure
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

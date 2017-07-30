@@ -1,0 +1,17 @@
+[Unit]
+Description=KubernetesKubeProxy
+
+[Service]
+ExecStart=/opt/bin/kube-proxy \
+    --cluster-cidr={{ .PodCidr }} \
+    --masquerade-all=true \
+    --hostname-override={{ .LocalIPv4 }} \
+    --kubeconfig=/etc/kubernetes/secrets/kubeproxy.kubeconfig \
+    --proxy-mode=iptables \
+    --v=2
+Restart=on-failure
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

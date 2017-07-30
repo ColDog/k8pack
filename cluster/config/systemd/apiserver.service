@@ -1,0 +1,38 @@
+[Unit]
+Description=KubernetesApiServer
+
+[Service]
+EnvironmentFile=/etc/kubernetes/versions.env
+ExecStartPre=-/usr/bin/docker stop apiserver.service
+ExecStartPre=-/usr/bin/docker rm apiserver.service
+ExecStart=/usr/bin/docker run --name=apiserver.service \
+    --net=host \
+    -v /etc/kubernetes/secrets:/etc/kubernetes/secrets \
+    ${HYPERKUBE_IMAGE} \
+    /hyperkube \
+    apiserver \
+    --v=1 \
+    --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \
+    --advertise-address={{ .LocalIPv4 }} \
+    --allow-privileged=true \
+    --bind-address=0.0.0.0 \
+    --secure-port=443 \
+    --insecure-port=80 \
+    --insecure-bind-address=127.0.0.1 \
+    --service-cluster-ip-range={{ .ServiceCidr }} \
+    --etcd-servers={{ .ETCDNodeURLs }} \
+    --client-ca-file=/etc/kubernetes/secrets/apiserver-ca.pem \
+    --service-account-key-file=/etc/kubernetes/secrets/serviceaccount-key.pem \
+    --kubelet-certificate-authority=/etc/kubernetes/secrets/apiserver-ca.pem \
+    --kubelet-client-certificate=/etc/kubernetes/secrets/apiserver.pem \
+    --kubelet-client-key=/etc/kubernetes/secrets/apiserver-key.pem \
+    --tls-ca-file=/etc/kubernetes/secrets/apiserver-ca.pem \
+    --tls-cert-file=/etc/kubernetes/secrets/apiserver.pem \
+    --tls-private-key-file=/etc/kubernetes/secrets/apiserver-key.pem
+ExecStop=/usr/bin/docker stop apiserver.service
+Restart=on-failure
+RestartSec=15
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

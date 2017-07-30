@@ -1,0 +1,62 @@
+{
+    "BaseURI": "${base_uri}",
+
+    "Signer": {
+        "CaURI": "secrets/ca.pem",
+        "KeyURI": "secrets/ca-key.pem"
+    },
+
+    "Certs": [
+        {"CN": "kubelet", "Org": ["kube-system"], "IPs": ["{{ .LocalIPv4 }}"], "DNS": ["{{ .LocalHostname }}"]},
+        {"CN": "kubeproxy", "Org": ["kube-system"], "IPs": ["127.0.0.1"]},
+        {"CN": "apiserver", "Org": ["kube-system"], "IPs": ["127.0.0.1", "{{ .LocalIPv4 }}", "{{ .APIServiceIP }}"], "DNS": ["{{ .LocalHostname }}", "{{ .PublicHost }}"]},
+        {"CN": "controllermanager", "Org": ["kube-system"], "IPs": ["127.0.0.1"]},
+        {"CN": "scheduler", "Org": ["kube-system"], "IPs": ["127.0.0.1"]}
+    ],
+
+    "Secrets": [
+        {"Name": "serviceaccount-key.pem", "URI": "secrets/serviceaccount-key.pem"}
+    ],
+
+    "MetadataProviders": ["EC2"],
+
+    "Config": {
+        "ClusterName": "${cluster_name}",
+
+        "APIHost": "127.0.0.1",
+        "PublicHost": "${api_host}",
+
+        "KubeletTaints": "--register-with-taints=node-role.kubernetes.io/master=:NoSchedule",
+
+        "NodeCidr": "${node_cidr}",
+        "PodCidr": "${pod_cidr}",
+        "ServiceCidr": "${service_cidr}",
+        "DNSServiceIP": "${dns_service_ip}",
+        "APIServiceIP": "${api_service_ip}",
+
+        "ETCDNodeURLs": "${etcd_urls}"
+    },
+
+    "Manifests": [],
+
+    "Systemd": [
+        {"Name": "apiserver", "Start": true, "URI": "systemd/apiserver.service"},
+        {"Name": "scheduler", "Start": true, "URI": "systemd/scheduler.service"},
+        {"Name": "controllermanager", "Start": true, "URI": "systemd/controllermanager.service"},
+        {"Name": "healthzmaster", "Start": true, "URI": "systemd/healthzmaster.service"},
+        {"Name": "kubelet", "Start": true, "URI": "systemd/kubelet.service"},
+        {"Name": "kubeproxy", "Start": true, "URI": "systemd/kubeproxy.service"},
+        {"Name": "flannel", "Start": true, "URI": "systemd/flannel.service"}
+    ],
+
+    "CNIConfig": {
+        "Name": "10-flannel.conf",
+        "Config": {
+            "name": "podnet",
+            "type": "flannel",
+            "delegate": {
+                "isDefaultGateway": true
+            }
+        }
+    }
+}
