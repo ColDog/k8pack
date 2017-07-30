@@ -73,7 +73,7 @@ resource "aws_iam_role_policy" "master_policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "logs:*",
+        "logs:*"
       ],
       "Resource": [
         "arn:aws:logs:*:*:log-group:*",
