@@ -1,3 +1,3 @@
 # FluentLogger
 
-This is a kubernetes addon.
+LOGGING IS HARD... This does not work at the moment.
