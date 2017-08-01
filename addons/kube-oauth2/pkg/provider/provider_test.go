@@ -9,7 +9,6 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/coldog/k8pack/addons/kube-oauth2/pkg/genconfig"
 	"github.com/stretchr/testify/assert"
 )
 

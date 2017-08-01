@@ -9,21 +9,23 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
-
-	"github.com/coldog/k8pack/addons/kube-oauth2/pkg/genconfig"
 
 	"golang.org/x/oauth2"
 )
 
 var (
-	Secret []byte = []byte("secret")
+	// Secret is the secret key used so sign oauth2 state codes.
+	Secret = []byte(os.Getenv("SECRET_KEY"))
 )
 
 const (
+	// DefaultRedirectURL is the default local api url.
 	DefaultRedirectURL = "http://localhost:6129/"
 )
 
+// User is the canonical definition of a user across providers.
 type User struct {
 	Name   string
 	Groups []string
@@ -55,10 +57,11 @@ func (providers Providers) Callback(provider string, w http.ResponseWriter, r *h
 	handler.Callback(w, r)
 }
 
-// FetchUserFunc should fetch a user
-type FetchUserFunc func(ctx context.Context, token *oauth2.Token) (*genconfig.User, error)
+// FetchUserFunc should fetch a user from the providers API.
+type FetchUserFunc func(ctx context.Context, token *oauth2.Token) (*User, error)
 
-type HandleUserFunc func(user *genconfig.User) (string, error)
+// HandleUserFunc is the callback to be called when a user is found.
+type HandleUserFunc func(user *User) (string, error)
 
 // Provider is an implementation of the two core oauth2 routes, login and the callback.
 // The callback route will call the fetch user handler and then the handle user handler

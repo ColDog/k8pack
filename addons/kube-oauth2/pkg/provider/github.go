@@ -6,19 +6,22 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/coldog/k8pack/addons/kube-oauth2/pkg/genconfig"
-
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
 
 const githubBase = "https://api.github.com"
 
+// NewGithubProvider configures a provider using Github's API. Configuration
+// is handled through environment variables.
+//
+// - client_id     = GITHUB_CLIENT_ID
+// - client_secret = GITHUB_CLIENT_SECRET
 func NewGithubProvider(advertise string, handleUser HandleUserFunc) *Provider {
 	config := &oauth2.Config{
 		RedirectURL:  advertise + "/callback/github",
-		ClientID:     os.Getenv("GITHUB_OAUTH_TOKEN"),
-		ClientSecret: os.Getenv("GITHUB_OAUTH_SECRET"),
+		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
+		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 		Scopes:       []string{"user"},
 		Endpoint:     github.Endpoint,
 	}
@@ -30,7 +33,7 @@ func NewGithubProvider(advertise string, handleUser HandleUserFunc) *Provider {
 }
 
 func fetchGithubUser(config *oauth2.Config) FetchUserFunc {
-	return func(ctx context.Context, token *oauth2.Token) (*genconfig.User, error) {
+	return func(ctx context.Context, token *oauth2.Token) (*User, error) {
 		resp, err := config.Client(ctx, token).Get(githubBase + "/user")
 		if err != nil {
 			return nil, err
@@ -48,7 +51,7 @@ func fetchGithubUser(config *oauth2.Config) FetchUserFunc {
 			return nil, err
 		}
 
-		user := &genconfig.User{
+		user := &User{
 			Name: data.Login,
 		}
 		return user, nil

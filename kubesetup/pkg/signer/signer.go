@@ -187,12 +187,12 @@ clusters:
 - name: {{ .clusterName }}
   cluster:
     server: https://{{ .apiHost }}
-    certificate-authority-data: {{ .caData }}
+    certificate-authority-data: "{{ .caData }}"
 users:
 - name: {{ .commonName }}
   user:
-    client-certificate-data: {{ .certData }}
-    client-key-data: {{ .keyData }}
+    client-certificate-data: "{{ .certData }}"
+    client-key-data: "{{ .keyData }}"
 contexts:
 - context:
     cluster: {{ .clusterName }}
