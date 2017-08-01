@@ -9,11 +9,6 @@ import (
 	"github.com/coldog/k8pack/kubesetup/pkg/signer"
 )
 
-type User struct {
-	Name   string
-	Groups []string
-}
-
 type Generator struct {
 	// Map from nonce to User.
 	users map[string]*User
