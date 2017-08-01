@@ -20,3 +20,10 @@ The core parts of this are terraform modules that configure the underlying resou
 The individual nodes are first provisioned using Packer. This provides a faster boot experience as the nodes don't need to download big containers or binaries. On startup, the `kubesetup` binary is run. This downloads various `systemd` units, prepares certificates and fetches metadata. The `kubesetup` has a flexible configuration that uses go templates to inject variables at startup. Once the `kubelet` systemd unit is started, the node effectively has booted and `kubesetup` shuts down.
 
 Further docs: [tutorial](docs/design/)
+
+## TODO
+
+- Rolling nodes feature: When autoscaling group config is updated, have a way to incrementally roll the nodes.
+- Secure assets: Better security around the secret keys.
+- Etcd over TLS.
+- Shutdown removal.
