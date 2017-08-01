@@ -4,6 +4,3 @@
 # Generated secrets.
 *.pem
 *.kubeconfig
-
-# Build binaries.
-kubesetup
