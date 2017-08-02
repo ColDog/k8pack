@@ -36,10 +36,17 @@ type Signer struct {
 
 // CertConfig is used to sign certificates.
 type CertConfig struct {
-	CN  string
+	// Common name, this is interpreted by Kubernetes as the username.
+	CN string
+
+	// Organization, these are groups in Kubernetes.
 	Org []string
+
 	IPs []string
 	DNS []string
+
+	// Controls the expiry of the cert. Defaults to 1 year.
+	ExpiresIn time.Duration
 }
 
 // Init does setup on the signer and validates the fields.
@@ -64,6 +71,10 @@ func (s *Signer) Init() error {
 }
 
 func (s *Signer) signCert(certConfig CertConfig) (*rsa.PrivateKey, *x509.Certificate, error) {
+	if certConfig.ExpiresIn == 0 {
+		certConfig.ExpiresIn = Duration365d
+	}
+
 	key, err := rsa.GenerateKey(rand.Reader, RSAKeySize)
 	if err != nil {
 		return nil, nil, err
@@ -92,7 +103,7 @@ func (s *Signer) signCert(certConfig CertConfig) (*rsa.PrivateKey, *x509.Certifi
 		IPAddresses:  ips,
 		SerialNumber: serial,
 		NotBefore:    s.caCert.NotBefore,
-		NotAfter:     time.Now().Add(Duration365d).UTC(),
+		NotAfter:     time.Now().Add(certConfig.ExpiresIn).UTC(),
 		KeyUsage:     x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
 		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
 	}

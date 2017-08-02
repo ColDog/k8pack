@@ -59,16 +59,15 @@ type Config struct {
 	// Secrets are files placed into the /etc/kubernetes/secrets/ directory.
 	Secrets []Asset
 
+	// Logrotate are files placed into the /etc/logrotate.d/ directory.
+	Logrotate []Asset
+
 	// MetadataProviders represents metadata providers that will load data
 	// into the Config map.
 	MetadataProviders []string
 
 	// Configuration used to render templates.
 	Config map[string]string
-
-	// MergeConfigURIs should contain a list of URI's that will be merged into the main Config map.
-	// These should point to json encoded objects of the form map[string]string.
-	MergeConfigURIs []string
 
 	// CNIConfig holds CNI configuration placed in /etc/cni/net.d/<name>.
 	CNIConfig *CNIConfig
@@ -103,26 +102,6 @@ func (c *Config) Run() error {
 			return err
 		}
 		for k, v := range meta {
-			c.Config[k] = v
-		}
-	}
-
-	for _, uri := range c.MergeConfigURIs {
-		uri = c.BaseURI + uri
-		log.Printf("loading config from %s", uri)
-
-		data, err := getter.Get(uri)
-		if err != nil {
-			return err
-		}
-
-		merge := map[string]string{}
-		err = json.Unmarshal(data, &data)
-		if err != nil {
-			return err
-		}
-
-		for k, v := range merge {
 			c.Config[k] = v
 		}
 	}
@@ -166,6 +145,15 @@ func (c *Config) Run() error {
 		log.Printf("writing secret %s", secret.Name)
 
 		err = c.getAsset("/etc/kubernetes/secrets/", "", secret, 0600)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, logrotate := range c.Logrotate {
+		log.Printf("writing logrotate %s", logrotate.Name)
+
+		err = c.getAsset("/etc/logrotate.d/", "", logrotate, 0700)
 		if err != nil {
 			return err
 		}
