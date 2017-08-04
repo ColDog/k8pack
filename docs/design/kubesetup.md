@@ -9,7 +9,8 @@ All assets are run through the GO templating engine using the `Config` map as th
 The configuration file is specified by the following GO structs.
 
 ```go
-// Asset is a downloadable file.
+// Asset is a downloadable file. Assets are run through the GO template engine
+// with Config.Config as the context.
 type Asset struct {
 	// Name is the name of the asset on disk.
 	Name string
@@ -52,16 +53,15 @@ type Config struct {
 	// Secrets are files placed into the /etc/kubernetes/secrets/ directory.
 	Secrets []Asset
 
+	// Logrotate are files placed into the /etc/logrotate.d/ directory.
+	Logrotate []Asset
+
 	// MetadataProviders represents metadata providers that will load data
 	// into the Config map.
 	MetadataProviders []string
 
 	// Configuration used to render templates.
 	Config map[string]string
-
-	// MergeConfigURIs should contain a list of URI's that will be merged into the main Config map.
-	// These should point to json encoded objects of the form map[string]string.
-	MergeConfigURIs []string
 
 	// CNIConfig holds CNI configuration placed in /etc/cni/net.d/<name>.
 	CNIConfig *CNIConfig

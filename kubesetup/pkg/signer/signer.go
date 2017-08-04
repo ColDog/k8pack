@@ -71,6 +71,10 @@ func (s *Signer) Init() error {
 }
 
 func (s *Signer) signCert(certConfig CertConfig) (*rsa.PrivateKey, *x509.Certificate, error) {
+	if s.caCert == nil {
+		return nil, nil, errors.New("not initialized")
+	}
+
 	if certConfig.ExpiresIn == 0 {
 		certConfig.ExpiresIn = Duration365d
 	}

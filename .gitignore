@@ -1,6 +1,6 @@
 # Editors.
 .vscode
 
-# Generated secrets.
+# Pem files
 *.pem
 *.kubeconfig
