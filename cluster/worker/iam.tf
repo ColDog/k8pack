@@ -1,5 +1,5 @@
 resource "aws_iam_instance_profile" "worker_profile" {
-  name = "${var.cluster_name}_worker_profile"
+  name = "${var.cluster_name}_${var.name}_profile"
   role = "${aws_iam_role.worker_role.name}"
 }
 
@@ -25,7 +25,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "worker_policy" {
-  name = "${var.cluster_name}_worker_policy"
+  name = "${var.cluster_name}_${var.name}_policy"
   role = "${aws_iam_role.worker_role.id}"
 
   policy = <<EOF

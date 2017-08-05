@@ -1,5 +1,5 @@
 resource "aws_launch_configuration" "worker" {
-  name                 = "${var.cluster_name}_worker_lc.${uuid()}"
+  name                 = "${var.cluster_name}_${var.name}_lc_${uuid()}"
   image_id             = "${var.ami}"
   instance_type        = "${var.instance_size}"
   key_name             = "${var.ssh_key}"
@@ -16,7 +16,7 @@ resource "aws_launch_configuration" "worker" {
 }
 
 resource "aws_autoscaling_group" "worker" {
-  name                 = "${var.cluster_name}_worker_asg"
+  name                 = "${var.cluster_name}_${var.name}_asg"
   max_size             = "${var.max}"
   min_size             = "${var.min}"
   desired_capacity     = "${var.desired}"

@@ -40,6 +40,18 @@ resource "aws_s3_bucket_object" "systemd_scheduler" {
   content = "${file("${path.module}/systemd/scheduler.service")}"
 }
 
+resource "aws_s3_bucket_object" "systemd_logrotate" {
+  bucket  = "${var.asset_bucket}"
+  key     = "${var.cluster_name}/systemd/logrotate.service"
+  content = "${file("${path.module}/systemd/logrotate.service")}"
+}
+
+resource "aws_s3_bucket_object" "systemd_logrotate_timer" {
+  bucket  = "${var.asset_bucket}"
+  key     = "${var.cluster_name}/systemd/logrotate.timer"
+  content = "${file("${path.module}/systemd/logrotate.timer")}"
+}
+
 data "template_file" "worker_config" {
   template = "${file("${path.module}/worker_config.json")}"
   vars {

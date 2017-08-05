@@ -1,3 +1,7 @@
+variable "name" {
+  default = "worker"
+}
+
 variable "ami" {}
 
 variable "user_data" {

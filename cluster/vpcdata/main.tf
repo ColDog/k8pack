@@ -25,3 +25,7 @@ output "worker_sg" {
 output "ssh_sg" {
   value = "${aws_security_group.ssh.id}"
 }
+
+output "public_sg" {
+  value = "${aws_security_group.public.id}"
+}
