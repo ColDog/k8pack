@@ -1,0 +1,10 @@
+{
+    "input": {
+        "type": "tail",
+        "input": {"match": "*.log"}
+    },
+    "output": {
+        "type": "stdout",
+        "output": {}
+    }
+}
