@@ -42,7 +42,7 @@ module "public_workers" {
   instance_size = "t2.small"
   ssh_key = "${var.ssh_key}"
 
-  subnets = ["${module.cluster.subnets}"]
+  subnets = ["${module.cluster.subnet_ids}"]
 
   autoscaling_sgs = [
     "${module.cluster.worker_sg}",
@@ -52,6 +52,6 @@ module "public_workers" {
 
   user_data = <<EOF
 #!/bin/sh
-/opt/bin/kubesetup -config-uri=${module.config.worker_config_uri}
+/opt/bin/kubesetup -config-uri=${module.cluster.worker_config_uri}
 EOF
 }

@@ -9,4 +9,7 @@
 
 # Ignore terraform examples.
 *.tfstate
+*.tfstate.backup
 .terraform
+
+kubesetup/kubesetup

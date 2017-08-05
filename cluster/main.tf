@@ -97,14 +97,6 @@ variable "dns_service_ip" {
   description = "The VIP (Virtual IP) address of the cluster DNS service. This IP must be in the range of the SERVICE_IP_RANGE and cannot be the first IP in the range. This same IP must be configured on all worker nodes to enable DNS service discovery. This should be left blank if you are not going to install cluster dns."
 }
 
-variable "ssh_enabled" {
-  default = 0
-}
-
-output "subnet_ids" {
-  value = "${data.aws_subnet_ids.main.ids}"
-}
-
 output "master_sg" {
   value = "${module.vpcdata.master_sg}"
 }
@@ -127,4 +119,16 @@ output "public_sg" {
 
 output "etcd_urls" {
   value = "${module.etcd.etcd_urls}"
+}
+
+output "worker_config_uri" {
+  value = "${module.config.worker_config_uri}"
+}
+
+output "master_config_uri" {
+  value = "${module.config.master_config_uri}"
+}
+
+output "subnet_ids" {
+  value = "${module.vpcdata.subnet_ids}"
 }

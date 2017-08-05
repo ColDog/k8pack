@@ -4,7 +4,7 @@ resource "aws_iam_instance_profile" "worker_profile" {
 }
 
 resource "aws_iam_role" "worker_role" {
-  name = "${var.cluster_name}_worker_role"
+  name = "${var.cluster_name}_${var.name}_role"
   path = "/"
 
   assume_role_policy = <<EOF
