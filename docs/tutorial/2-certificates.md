@@ -107,7 +107,7 @@ Results:
 serviceaccount-key.pem
 ```
 
-## Generate Admin Kubeconfig
+## Generate Admin Certs
 
 Create the admin client certificate signing request:
 
@@ -144,11 +144,37 @@ cfssl gencert \
   admin-csr.json | cfssljson -bare admin
 ```
 
+Generate the kubeconfig file:
+
+```bash
+cat > admin.kubeconfig <<EOF
+apiVersion: v1
+kind: Config
+current-context: default
+clusters:
+- name: default
+  cluster:
+    server: https://k8s.default.<MY_DOMAIN>
+    certificate-authority-data: $(cat ca.pem | base64)
+users:
+- name: admin
+  user:
+    client-certificate-data: $(cat admin.pem | base64)
+    client-key-data: $(cat admin-key.pem | base64)
+contexts:
+- context:
+    cluster: default
+    user: admin
+  name: default
+EOF
+```
+
 Results:
 
 ```
 admin-key.pem
 admin.pem
+admin.kubeconfig
 ```
 
 ## Uploading Files

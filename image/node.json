@@ -4,9 +4,9 @@
     "aws_secret_key": "",
     "aws_region": "us-west-2",
     "cni_version": "v0.5.2",
-    "k8s_version": "v1.6.4",
-    "flanneld_version": "v0.7.1",
-    "version": "0.1"
+    "k8s_version": "v1.7.2",
+    "flanneld_version": "v0.8.0",
+    "version": "0.3"
   },
   "builders": [{
     "type": "amazon-ebs",

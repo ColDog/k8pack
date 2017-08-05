@@ -1,0 +1,94 @@
+# Example Haproxy ingress controller. This includes launching a default backend
+# which is a basic Nginx server.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    run: haproxy-ingress
+  name: haproxy-ingress
+  namespace: default
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: haproxy-ingress
+  name: haproxy-ingress
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: haproxy-ingress
+  template:
+    metadata:
+      labels:
+        run: haproxy-ingress
+    spec:
+      hostNetwork: true
+      serviceAccountName: haproxy-ingress
+      tolerations:
+      - key: node-role.kubernetes.io/public
+        effect: NoSchedule
+      containers:
+      - name: haproxy-ingress
+        image: quay.io/jcmoraisjr/haproxy-ingress
+        args:
+        - --default-backend-service=default/default-backend
+        - --configmap=default/haproxy-ingress
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: default-backend
+  name: default-backend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: default-backend
+  template:
+    metadata:
+      labels:
+        app: default-backend
+    spec:
+      hostNetwork: true
+      tolerations:
+      - key: node-role.kubernetes.io/public
+        effect: NoSchedule
+      containers:
+      - name: default-backend
+        image: nginx
+        ports:
+        - name: http
+          containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: default-backend
+  name: default-backend
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: default-backend

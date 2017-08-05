@@ -13,3 +13,5 @@
 .terraform
 
 kubesetup/kubesetup
+
+tmp/
