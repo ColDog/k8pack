@@ -1,0 +1,11 @@
+/var/lib/docker/containers/*/*-json.log {
+    rotate 5
+    copytruncate
+    missingok
+    notifempty
+    compress
+    minsize 2M
+    maxsize 50M
+    hourly
+    create 0644 root root
+}

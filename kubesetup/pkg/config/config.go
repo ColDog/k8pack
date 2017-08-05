@@ -69,6 +69,9 @@ type Config struct {
 	// Configuration used to render templates.
 	Config map[string]string
 
+	// Configuration override, merged into Config on Run.
+	Override map[string]string
+
 	// CNIConfig holds CNI configuration placed in /etc/cni/net.d/<name>.
 	CNIConfig *CNIConfig
 }
@@ -77,6 +80,10 @@ type Config struct {
 func (c *Config) Run() error {
 	if c.Signer == nil {
 		return errors.New("signer must be present")
+	}
+
+	for k, v := range c.Override {
+		c.Config[k] = v
 	}
 
 	c.Signer.CaURI = c.BaseURI + c.Signer.CaURI
@@ -135,7 +142,7 @@ func (c *Config) Run() error {
 	for _, systemd := range c.Systemd {
 		log.Printf("writing systemd unit %s", systemd.Name)
 
-		err = c.getAsset("/etc/systemd/system/", ".service", systemd.Asset, 0755)
+		err = c.getAsset("/etc/systemd/system/", "", systemd.Asset, 0755)
 		if err != nil {
 			return err
 		}

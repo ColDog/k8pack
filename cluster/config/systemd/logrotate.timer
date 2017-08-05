@@ -1,0 +1,6 @@
+[Unit]
+Description=Log Rotation
+
+[Timer]
+OnCalendar=*:0/15
+Persistent=true

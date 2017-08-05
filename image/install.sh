@@ -21,6 +21,7 @@ mkdir -p /etc/kubernetes/secrets
 mkdir -p /etc/kubernetes/manifests
 mkdir -p /opt/downloads/ /opt/cni/bin/ /opt/bin
 mkdir -p /etc/cni/net.d
+mkdir -p /etc/logrotate.d/
 
 # Hyperkube config.
 hyperkube="quay.io/coreos/hyperkube:${K8S_VERSION}_coreos.0"

@@ -27,3 +27,6 @@ Further docs: [tutorial](docs/design/)
 - Secure assets: Better security around the secret keys.
 - Etcd over TLS.
 - Shutdown removal.
+- Vault cert signing.
+- Ingress controller addon.
+- Logging...

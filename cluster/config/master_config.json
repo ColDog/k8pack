@@ -40,13 +40,15 @@
     "Manifests": [],
 
     "Systemd": [
-        {"Name": "apiserver", "Start": true, "URI": "systemd/apiserver.service"},
-        {"Name": "scheduler", "Start": true, "URI": "systemd/scheduler.service"},
-        {"Name": "controllermanager", "Start": true, "URI": "systemd/controllermanager.service"},
-        {"Name": "healthzmaster", "Start": true, "URI": "systemd/healthzmaster.service"},
-        {"Name": "kubelet", "Start": true, "URI": "systemd/kubelet.service"},
-        {"Name": "kubeproxy", "Start": true, "URI": "systemd/kubeproxy.service"},
-        {"Name": "flannel", "Start": true, "URI": "systemd/flannel.service"}
+        {"Name": "apiserver.service", "Start": true, "URI": "systemd/apiserver.service"},
+        {"Name": "scheduler.service", "Start": true, "URI": "systemd/scheduler.service"},
+        {"Name": "controllermanager.service", "Start": true, "URI": "systemd/controllermanager.service"},
+        {"Name": "healthzmaster.service", "Start": true, "URI": "systemd/healthzmaster.service"},
+        {"Name": "kubelet.service", "Start": true, "URI": "systemd/kubelet.service"},
+        {"Name": "kubeproxy.service", "Start": true, "URI": "systemd/kubeproxy.service"},
+        {"Name": "flannel.service", "Start": true, "URI": "systemd/flannel.service"},
+        {"Name": "logrotate.service", "Start": false, "URI": "systemd/logrotate.service"},
+        {"Name": "logrotate.timer", "Start": true, "URI": "systemd/logrotate.timer"}
     ],
 
     "CNIConfig": {
