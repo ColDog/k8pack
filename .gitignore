@@ -1,6 +1,12 @@
 # Editors.
 .vscode
 
-# Pem files
+# Pem files.
 *.pem
 *.kubeconfig
+
+.env
+
+# Ignore terraform examples.
+*.tfstate
+.terraform

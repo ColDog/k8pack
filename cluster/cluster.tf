@@ -13,10 +13,7 @@ module "etcd" {
 
   subnets = ["${module.vpcdata.subnet_ids}"]
 
-  security_groups = "${compact([
-    "${module.vpcdata.worker_sg}",
-    "${var.ssh_enabled ? module.vpcdata.ssh_sg : ""}",
-  ])}"
+  security_groups = ["${compact("${module.vpcdata.worker_sg}", "${var.ssh_enabled ? module.vpcdata.ssh_sg : ""}")}"]
 
   instances     = "${var.etcd_instances}"
   instance_type = "${var.etcd_instance_size}"
@@ -55,11 +52,11 @@ module "master" {
 
   elb_sgs = ["${module.vpcdata.master_lb_sg}"]
 
-  autoscaling_sgs = "${compact([
+  autoscaling_sgs = ["${compact(
     "${module.vpcdata.master_sg}",
     "${module.vpcdata.worker_sg}",
     "${var.ssh_enabled ? module.vpcdata.ssh_sg : ""}",
-  ])}"
+  )}"]
 
   subnets = ["${module.vpcdata.subnet_ids}"]
 
@@ -81,10 +78,10 @@ module "worker" {
   min     = "${var.worker_instances["min"]}"
   desired = "${var.worker_instances["desired"]}"
 
-  autoscaling_sgs = "${compact([
+  autoscaling_sgs = ["${compact(
     "${module.vpcdata.worker_sg}",
     "${var.ssh_enabled ? module.vpcdata.ssh_sg : ""}",
-  ])}"
+  )}"]
 
   subnets = ["${module.vpcdata.subnet_ids}"]
 
