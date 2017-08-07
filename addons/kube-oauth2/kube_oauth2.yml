@@ -25,7 +25,7 @@ spec:
           protocol: TCP
         args:
         - kube-oauth2server
-        - -advertise=oauth.default.coldog.xyz
+        - -advertise=http://auth.default.coldog.xyz
         - -listen=0.0.0.0:80
         - -ca-uri=https://s3-us-west-2.amazonaws.com/coldog-k8s-cluster/default/secrets/ca.pem
         - -key-uri=https://s3-us-west-2.amazonaws.com/coldog-k8s-cluster/default/secrets/ca-key.pem

@@ -2,6 +2,15 @@
 
 This plugin handles creating Kubeconfig files based on authentication with an oauth2 (openid connect?) provider. Kubeconfig files are downloaded locally to the developers machine configured with the correct groups and common name. All authentication is handled through oauth2.
 
+## State
+
+This is in an MVP state, currently the following pieces are not implemented:
+
+- Github organization restrictions.
+- Reading groups.
+- Improve security around reading kubeconfig files.
+- Actually writing the kubeconfig file using Kubectl.
+
 ## Flow
 
 1. Developer visits auth login endpoint. The login endpoint includes the oauth2 provider and the api server host as parameters.
