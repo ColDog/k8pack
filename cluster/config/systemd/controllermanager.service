@@ -7,13 +7,15 @@ ExecStartPre=-/usr/bin/docker stop controllermanager.service
 ExecStartPre=-/usr/bin/docker rm controllermanager.service
 ExecStart=/usr/bin/docker run --name=controllermanager.service \
     --net=host \
-    -v /etc/kubernetes/secrets:/etc/kubernetes/secrets \
+    -v /etc/kubernetes/:/etc/kubernetes/ \
     ${HYPERKUBE_IMAGE} \
     /hyperkube \
     controller-manager \
     --address=0.0.0.0 \
-    --allocate-node-cidrs=true \
+    --allocate-node-cidrs=false \
     --cluster-cidr={{ .PodCidr }} \
+    --cloud-provider=aws \
+    --cloud-config=/etc/kubernetes/cloud.config \
     --service-cluster-ip-range={{ .ServiceCidr }} \
     --service-account-private-key-file=/etc/kubernetes/secrets/serviceaccount-key.pem \
     --kubeconfig=/etc/kubernetes/secrets/controllermanager.kubeconfig \

@@ -7,7 +7,7 @@ ExecStartPre=-/usr/bin/docker stop apiserver.service
 ExecStartPre=-/usr/bin/docker rm apiserver.service
 ExecStart=/usr/bin/docker run --name=apiserver.service \
     --net=host \
-    -v /etc/kubernetes/secrets:/etc/kubernetes/secrets \
+    -v /etc/kubernetes/:/etc/kubernetes/ \
     ${HYPERKUBE_IMAGE} \
     /hyperkube \
     apiserver \
@@ -16,6 +16,8 @@ ExecStart=/usr/bin/docker run --name=apiserver.service \
     --advertise-address={{ .LocalIPv4 }} \
     --allow-privileged=true \
     --bind-address=0.0.0.0 \
+    --cloud-provider=aws \
+    --cloud-config=/etc/kubernetes/cloud.config \
     --secure-port=443 \
     --insecure-port=80 \
     --insecure-bind-address=127.0.0.1 \

@@ -30,3 +30,4 @@ Further docs: [tutorial](docs/design/)
 - Vault cert signing.
 - Ingress controller addon.
 - Logging...
+- Route53 registration controller.

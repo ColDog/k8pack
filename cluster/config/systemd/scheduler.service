@@ -7,7 +7,7 @@ ExecStartPre=-/usr/bin/docker stop scheduler.service
 ExecStartPre=-/usr/bin/docker rm scheduler.service
 ExecStart=/usr/bin/docker run --name=scheduler.service \
     --net=host \
-    -v /etc/kubernetes/secrets:/etc/kubernetes/secrets \
+    -v /etc/kubernetes/:/etc/kubernetes/ \
     ${HYPERKUBE_IMAGE} \
     /hyperkube \
     scheduler \

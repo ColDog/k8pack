@@ -8,7 +8,7 @@ import (
 
 	"github.com/coldog/k8pack/kubesetup/pkg/signer"
 
-	"github.com/coldog/k8pack/addons/kube-oauth2/pkg/genconfig"
+	"github.com/coldog/k8pack/addons/kube-oauth2/pkg/generator"
 	"github.com/coldog/k8pack/addons/kube-oauth2/pkg/provider"
 
 	"github.com/julienschmidt/httprouter"
@@ -27,7 +27,7 @@ var (
 
 type server struct {
 	providers provider.Providers
-	generator *genconfig.Generator
+	generator *generator.Generator
 }
 
 func (s *server) login(w http.ResponseWriter, r *http.Request, rp httprouter.Params) {
@@ -66,7 +66,7 @@ func main() {
 
 	srv := &server{
 		providers: provider.Providers{},
-		generator: &genconfig.Generator{
+		generator: &generator.Generator{
 			Signer: sign,
 		},
 	}
@@ -80,6 +80,9 @@ func main() {
 	r.GET("/sign", srv.sign)
 	r.GET("/login/:provider", srv.login)
 	r.GET("/callback/:provider", srv.callback)
+	r.GET("/healthz", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Write([]byte("ok"))
+	})
 
 	handler := requestLogger{r}
 

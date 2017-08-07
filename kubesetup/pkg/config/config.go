@@ -39,6 +39,13 @@ type CNIConfig struct {
 	Config map[string]interface{}
 }
 
+// CloudConfig represents the Kubernetes cloud config.
+type CloudConfig struct {
+	KubernetesClusterID         string
+	DisableSecurityGroupIngress string
+	ElbSecurityGroup            string
+}
+
 // Config represents all the configuration needed to create a k8s cluster.
 type Config struct {
 	// BaseURI is prepended to all URI's before processing.
@@ -74,6 +81,9 @@ type Config struct {
 
 	// CNIConfig holds CNI configuration placed in /etc/cni/net.d/<name>.
 	CNIConfig *CNIConfig
+
+	// CloudConfig holds kube cloud config, placed in /etc/kubernetes/cloud.config.
+	CloudConfig *CloudConfig
 }
 
 // Run applies the configuration to the local machine.
@@ -176,6 +186,19 @@ func (c *Config) Run() error {
 		}
 	}
 
+	if c.CloudConfig != nil {
+		log.Printf("writing cloud config %s", c.CNIConfig.Name)
+		c.CloudConfig.KubernetesClusterID = format(c.CloudConfig.KubernetesClusterID, c.Config)
+		c.CloudConfig.ElbSecurityGroup = format(c.CloudConfig.ElbSecurityGroup, c.Config)
+		c.CloudConfig.DisableSecurityGroupIngress = format(c.CloudConfig.DisableSecurityGroupIngress, c.Config)
+
+		data := getCloudConfig(c.CloudConfig)
+		err = ioutil.WriteFile("/etc/kubernetes/cloud.config", data, 0600)
+		if err != nil {
+			return err
+		}
+	}
+
 	log.Println("systemctl reload")
 	err = exec.Command("systemctl", "daemon-reload").Run()
 	if err != nil {
@@ -244,4 +267,29 @@ func formatList(list []string, m map[string]string) (out []string) {
 		out = append(out, format(item, m))
 	}
 	return out
+}
+
+func formatMap(x map[string]interface{}, m map[string]string) {
+	for k, v := range x {
+		if val, ok := v.(string); ok {
+			x[k] = format(val, m)
+		}
+	}
+}
+
+func getCloudConfig(conf *CloudConfig) []byte {
+	const tpl = `[global]
+KubernetesClusterID=%s
+DisableSecurityGroupIngress=%s
+ElbSecurityGroup=%s
+`
+	buf := &bytes.Buffer{}
+	fmt.Fprintf(
+		buf,
+		tpl,
+		conf.KubernetesClusterID,
+		conf.DisableSecurityGroupIngress,
+		conf.ElbSecurityGroup,
+	)
+	return buf.Bytes()
 }

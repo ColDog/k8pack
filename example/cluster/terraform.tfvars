@@ -1,4 +1,4 @@
-ami          = "ami-ea739592"
+ami          = "ami-a352b4db"
 domain       = "coldog.xyz"
 api_dns_name = "k8s.default"
 cluster_name = "default"

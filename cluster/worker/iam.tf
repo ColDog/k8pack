@@ -61,6 +61,41 @@ resource "aws_iam_role_policy" "worker_policy" {
         "arn:aws:logs:*:*:log-group:*",
         "arn:aws:logs:*:*:log-group:*:log-stream:*"
       ]
+    },
+    {
+        "Action": [
+            "sts:GetCallerIdentity"
+        ],
+        "Effect": "Allow",
+        "Resource": "*"
+    },
+    {
+      "Action": [
+          "ec2:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": [
+          "autoscaling:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": [
+          "elasticloadbalancing:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": [
+          "route53:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
     }
   ]
 }

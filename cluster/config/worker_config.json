@@ -50,5 +50,11 @@
                 "isDefaultGateway": true
             }
         }
+    },
+
+    "CloudConfig": {
+        "KubernetesClusterID": "{{ .ClusterName }}",
+        "DisableSecurityGroupIngress": "off",
+        "ElbSecurityGroup": ""
     }
 }

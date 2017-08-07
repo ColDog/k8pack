@@ -28,31 +28,7 @@ module "cluster" {
   }
   worker_instances {
     min     = 0
-    max     = 1
-    desired = 1
+    max     = 2
+    desired = 2
   }
-}
-
-module "public_workers" {
-  source = "../../cluster/worker"
-
-  name          = "public"
-  ami           = "${var.ami}"
-  cluster_name  = "${var.cluster_name}"
-  instance_size = "t2.small"
-  ssh_key       = "${var.ssh_key}"
-  subnets       = ["${module.cluster.subnet_ids}"]
-
-  autoscaling_sgs = [
-    "${module.cluster.worker_sg}",
-    "${module.cluster.ssh_sg}",
-    "${module.cluster.public_sg}",
-  ]
-
-  user_data = <<EOF
-#!/bin/sh
-/opt/bin/kubesetup \
-  -config-uri=${module.cluster.worker_config_uri} \
-  -override='{"KubeletTaints": "--register-with-taints=node-role.kubernetes.io/public=:NoSchedule"}'
-EOF
 }

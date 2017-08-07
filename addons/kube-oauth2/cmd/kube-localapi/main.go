@@ -47,6 +47,9 @@ func main() {
 
 	r := httprouter.New()
 	r.GET("/", handle)
+	r.GET("/healthz", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		w.Write([]byte("ok"))
+	})
 
 	if err := http.ListenAndServe(listen, r); err != nil {
 		fmt.Println(err)

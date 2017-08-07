@@ -84,6 +84,7 @@ module "worker" {
   autoscaling_sgs = [
     "${module.vpcdata.worker_sg}",
     "${module.vpcdata.ssh_sg}",
+    "${module.vpcdata.public_sg}",
   ]
 
   subnets = ["${module.vpcdata.subnet_ids}"]
