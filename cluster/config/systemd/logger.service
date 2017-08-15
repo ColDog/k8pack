@@ -1,0 +1,21 @@
+[Unit]
+Description=Logger
+
+[Service]
+ExecStartPre=-/usr/bin/docker stop logger.service
+ExecStartPre=-/usr/bin/docker rm logger.service
+ExecStart=/usr/bin/docker run --name=logger.service \
+    -e LOG_GROUP_NAME={{ .ClusterName }} \
+    -e AWS_REGION={{ .AWSRegion }} \
+    --net=host \
+    --privileged \
+    -u root \
+    -v /var/log/:/var/log/ \
+    coldog/fluent-logger:0.1.4
+ExecStop=/usr/bin/docker stop logger.service
+Restart=on-failure
+RestartSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

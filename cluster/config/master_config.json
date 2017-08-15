@@ -34,6 +34,8 @@
         "DNSServiceIP": "${dns_service_ip}",
         "APIServiceIP": "${api_service_ip}",
 
+        "AWSRegion": "${aws_region}",
+
         "ETCDNodeURLs": "${etcd_urls}"
     },
 
@@ -48,7 +50,8 @@
         {"Name": "kubeproxy.service", "Start": true, "URI": "systemd/kubeproxy.service"},
         {"Name": "flannel.service", "Start": true, "URI": "systemd/flannel.service"},
         {"Name": "logrotate.service", "Start": false, "URI": "systemd/logrotate.service"},
-        {"Name": "logrotate.timer", "Start": true, "URI": "systemd/logrotate.timer"}
+        {"Name": "logrotate.timer", "Start": true, "URI": "systemd/logrotate.timer"},
+        {"Name": "logger.service", "Start": true, "URI": "systemd/logger.service"}
     ],
 
     "CNIConfig": {

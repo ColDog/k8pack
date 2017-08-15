@@ -52,6 +52,12 @@ resource "aws_s3_bucket_object" "systemd_logrotate_timer" {
   content = "${file("${path.module}/systemd/logrotate.timer")}"
 }
 
+resource "aws_s3_bucket_object" "systemd_logger" {
+  bucket  = "${var.asset_bucket}"
+  key     = "${var.cluster_name}/systemd/logger.service"
+  content = "${file("${path.module}/systemd/logger.service")}"
+}
+
 data "template_file" "worker_config" {
   template = "${file("${path.module}/worker_config.json")}"
   vars {
@@ -65,6 +71,7 @@ data "template_file" "worker_config" {
     api_service_ip = "${var.api_service_ip}"
     asset_bucket   = "${var.asset_bucket}"
     etcd_urls      = "${join(",", var.etcd_urls)}"
+    aws_region     = "${data.aws_region.current.name}"
   }
 }
 
@@ -87,6 +94,7 @@ data "template_file" "master_config" {
     api_service_ip = "${var.api_service_ip}"
     asset_bucket   = "${var.asset_bucket}"
     etcd_urls      = "${join(",", var.etcd_urls)}"
+    aws_region     = "${data.aws_region.current.name}"
   }
 }
 
