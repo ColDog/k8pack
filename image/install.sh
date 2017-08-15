@@ -59,3 +59,29 @@ chmod +x /opt/bin/kubesetup
 # This is done because of https://github.com/kubernetes/kubernetes/issues/32728.
 sudo mount -o remount,rw '/sys/fs/cgroup'
 sudo ln -s /sys/fs/cgroup/cpu,cpuacct /sys/fs/cgroup/cpuacct,cpu
+
+# Coreos does not have socat installed. To avoid using rkt, we do some serious hacking.
+# Make socat directories
+mkdir -p /opt/bin/socat.d/bin /opt/bin/socat.d/lib
+# Create socat wrapper
+cat << EOF > /opt/bin/socat
+#! /bin/bash
+PATH=/usr/bin:/bin:/usr/sbin:/sbin:/opt/bin
+LD_LIBRARY_PATH=/opt/bin/socat.d/lib:$LD_LIBRARY_PATH exec /opt/bin/socat.d/bin/socat "\$@"
+EOF
+# Create an install script, installs socat on fedora and copies necessary libs.
+cat << EOF > /home/core/install-socat.sh
+dnf install -y socat
+cp -f /usr/bin/socat /media/root/opt/bin/socat.d/bin/socat
+cp -f /usr/lib64/libssl* /media/root/opt/bin/socat.d/lib/
+cp -f /usr/lib64/libcrypto* /media/root/opt/bin/socat.d/lib/
+cp -f /usr/lib64/libreadline* /media/root/opt/bin/socat.d/lib/
+cp -f /usr/lib64/libtinfo* /media/root/opt/bin/socat.d/lib/
+EOF
+chmod +x /opt/bin/socat
+chmod +x /home/core/install-socat.sh
+# Run the install script inside the coreos toolbox.
+toolbox /media/root/home/core/install-socat.sh
+# Cleanup.
+rm /home/core/install-socat.sh
+sudo rm -rf /var/lib/toolbox/*

@@ -21,11 +21,14 @@ module "cluster" {
   asset_bucket = "${var.asset_bucket}"
   ssh_key      = "${var.ssh_key}"
 
+  master_instance_size = "t2.medium"
   master_instances {
     min     = 0
     max     = 1
     desired = 1
   }
+
+  worker_instance_size = "t2.medium"
   worker_instances {
     min     = 0
     max     = 2

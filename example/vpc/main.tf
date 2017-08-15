@@ -5,6 +5,6 @@ provider "aws" {
 module "vpc" {
   source = "../../vpc"
 
-  asset_bucket = "coldog-k8s-cluster"
+  asset_bucket = "coldog-k8s"
   vpc_name     = "k8s"
 }
