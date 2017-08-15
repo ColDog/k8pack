@@ -1,7 +1,0 @@
-ami          = "ami-a352b4db"
-domain       = "coldog.xyz"
-api_dns_name = "k8s.default"
-cluster_name = "default"
-vpc_id       = "vpc-0c835b6a"
-asset_bucket = "coldog-k8s-cluster"
-ssh_key      = "default_key"
