@@ -11,7 +11,9 @@
 *.tfstate
 *.tfstate.backup
 .terraform
+*.tfvars
 
+# Binaries
 kubesetup/kubesetup
 
 tmp/
