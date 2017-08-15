@@ -1,3 +1,8 @@
+# This is an example nginx ingress controller. It also includes the default
+# backend required by Kubernetes. This runs as a daemonset on all worker nodes,
+# meaning your worker nodes must be exposed to the internet on 80 and 443.
+# This is a simplistic solution but works effectively. It avoids having to
+# provision a load balancer if not needed.
 kind: Service
 apiVersion: v1
 metadata:
@@ -74,7 +79,6 @@ spec:
     spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: true
-      updateStrategy: RollingUpdate
       containers:
       - image: gcr.io/google_containers/nginx-ingress-controller:0.8.3
         name: ingress-nginx
