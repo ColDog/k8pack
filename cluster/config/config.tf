@@ -77,7 +77,7 @@ data "template_file" "worker_config" {
 
 resource "aws_s3_bucket_object" "worker_config" {
   bucket  = "${var.asset_bucket}"
-  key     = "${var.cluster_name}/worker_config.json"
+  key     = "${var.cluster_name}/worker_config_${md5(data.template_file.worker_config.rendered)}.json"
   content = "${data.template_file.worker_config.rendered}"
 }
 
@@ -100,6 +100,6 @@ data "template_file" "master_config" {
 
 resource "aws_s3_bucket_object" "master_config" {
   bucket  = "${var.asset_bucket}"
-  key     = "${var.cluster_name}/master_config.json"
+  key     = "${var.cluster_name}/master_config__${md5(data.template_file.master_config.rendered)}.json"
   content = "${data.template_file.master_config.rendered}"
 }
