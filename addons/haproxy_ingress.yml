@@ -1,0 +1,66 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: haproxy-ingress
+  namespace: kube-system
+  labels:
+    app: haproxy-ingress
+data: {}
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: haproxy-ingress
+  name: haproxy-ingress
+  namespace: kube-system
+spec:
+  template:
+    metadata:
+      labels:
+        app: haproxy-ingress
+    spec:
+      terminationGracePeriodSeconds: 60
+      hostNetwork: true
+      containers:
+      - name: haproxy-ingress
+        image: quay.io/jcmoraisjr/haproxy-ingress
+        imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 20
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 10m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 100Mi
+        args:
+        - --default-backend-service=kube-system/default-backend
+        - --configmap=kube-system/haproxy-ingress
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        - name: stat
+          containerPort: 1936
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
