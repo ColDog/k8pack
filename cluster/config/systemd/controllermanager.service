@@ -12,7 +12,7 @@ ExecStart=/usr/bin/docker run --name=controllermanager.service \
     /hyperkube \
     controller-manager \
     --address=0.0.0.0 \
-    --allocate-node-cidrs=false \
+    --allocate-node-cidrs={{ .AllocateNodeCidrs }} \
     --cluster-cidr={{ .PodCidr }} \
     --cloud-provider=aws \
     --cloud-config=/etc/kubernetes/cloud.config \

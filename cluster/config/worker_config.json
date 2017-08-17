@@ -31,7 +31,9 @@
 
         "AWSRegion": "${aws_region}",
 
-        "ETCDNodeURLs": "${etcd_urls}"
+        "ETCDNodeURLs": "${etcd_urls}",
+
+        "AllocateNodeCidrs": "true"
     },
 
     "Manifests": [],

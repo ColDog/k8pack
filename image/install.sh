@@ -68,11 +68,6 @@ wget -N -P /opt/cni/bin https://github.com/projectcalico/cni-plugin/releases/dow
 wget -N -P /opt/cni/bin https://github.com/projectcalico/cni-plugin/releases/download/v1.10.0/calico-ipam
 chmod +x /opt/cni/bin/calico /opt/cni/bin/calico-ipam
 
-# Loopback CNI binary.
-wget https://github.com/containernetworking/cni/releases/download/v0.3.0/cni-v0.3.0.tgz
-tar -zxvf cni-v0.3.0.tgz
-sudo cp loopback /opt/cni/bin/
-
 # Kubesetup binary.
 mv /home/core/kubesetup /opt/bin/kubesetup
 chmod +x /opt/bin/kubesetup

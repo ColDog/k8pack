@@ -5,18 +5,30 @@ Requires=docker.service
 
 [Service]
 EnvironmentFile=/etc/kubernetes/versions.env
+Environment=ETCD_ENDPOINTS={{ .ETCDNodeURLs }}
 User=root
 PermissionsStartOnly=true
+ExecStartPre=-/usr/bin/cat <<EOF | /usr/bin/docker run -i --net=host --rm calico/ctl apply -f -
+apiVersion: v1
+kind: ipPool
+metadata:
+  cidr: 10.2.0.0/16
+spec:
+  ipip:
+    enabled: true
+    mode: cross-subnet
+  nat-outgoing: true
+EOF
 ExecStartPre=-/usr/bin/docker stop calico.service
 ExecStartPre=-/usr/bin/docker rm calico.service
 ExecStart=/usr/bin/docker run --net=host --privileged --name=calico.service \
   -e ETCD_ENDPOINTS={{ .ETCDNodeURLs }} \
   -e NODENAME=${HOSTNAME} \
-  -e CALICO_IPV4POOL_CIDR={{ .PodCidr }} \
-  -e CALICO_IPV4POOL_IPIP=cross-subnet \
-  -e CALICO_LIBNETWORK_ENABLED=true \
-  -e CALICO_NETWORKING_BACKEND=bird \
+  -e FELIX_IPV6SUPPORT=false \
   -e FELIX_DEFAULTENDPOINTTOHOSTACTION=ACCEPT \
+  -e CALICO_DISABLE_FILE_LOGGING=true \
+  -e CALICO_NETWORKING_BACKEND=bird \
+  -e CALICO_LIBNETWORK_ENABLED=true \
   -v /etc/kubernetes:/etc/kubernetes \
   -v /var/run/calico:/var/run/calico \
   -v /lib/modules:/lib/modules \
