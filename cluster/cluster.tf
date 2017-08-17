@@ -37,6 +37,7 @@ module "config" {
   api_service_ip = "${var.api_service_ip}"
   asset_bucket   = "${var.asset_bucket}"
   etcd_urls      = "${module.etcd.etcd_urls}"
+  network_plugin = "${var.network_plugin}"
 }
 
 module "master" {

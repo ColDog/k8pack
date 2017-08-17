@@ -16,6 +16,12 @@ resource "aws_s3_bucket_object" "systemd_flannel" {
   content = "${file("${path.module}/systemd/flannel.service")}"
 }
 
+resource "aws_s3_bucket_object" "systemd_calico" {
+  bucket  = "${var.asset_bucket}"
+  key     = "${var.cluster_name}/systemd/calico.service"
+  content = "${file("${path.module}/systemd/calico.service")}"
+}
+
 resource "aws_s3_bucket_object" "systemd_healthzmaster" {
   bucket  = "${var.asset_bucket}"
   key     = "${var.cluster_name}/systemd/healthzmaster.service"
@@ -58,6 +64,13 @@ resource "aws_s3_bucket_object" "systemd_logger" {
   content = "${file("${path.module}/systemd/logger.service")}"
 }
 
+data "template_file" "cni_config" {
+  template = "${file("${path.module}/cni/${var.network_plugin}.json")}"
+  vars {
+    etcd_urls = "${join(",", var.etcd_urls)}"
+  }
+}
+
 data "template_file" "worker_config" {
   template = "${file("${path.module}/worker_config.json")}"
   vars {
@@ -72,6 +85,8 @@ data "template_file" "worker_config" {
     asset_bucket   = "${var.asset_bucket}"
     etcd_urls      = "${join(",", var.etcd_urls)}"
     aws_region     = "${data.aws_region.current.name}"
+    cni_config     = "${data.template_file.cni_config.rendered}",
+    network_plugin = "${var.network_plugin}",
   }
 }
 
@@ -95,11 +110,13 @@ data "template_file" "master_config" {
     asset_bucket   = "${var.asset_bucket}"
     etcd_urls      = "${join(",", var.etcd_urls)}"
     aws_region     = "${data.aws_region.current.name}"
+    cni_config     = "${data.template_file.cni_config.rendered}",
+    network_plugin = "${var.network_plugin}",
   }
 }
 
 resource "aws_s3_bucket_object" "master_config" {
   bucket  = "${var.asset_bucket}"
-  key     = "${var.cluster_name}/master_config__${md5(data.template_file.master_config.rendered)}.json"
+  key     = "${var.cluster_name}/master_config_${md5(data.template_file.master_config.rendered)}.json"
   content = "${data.template_file.master_config.rendered}"
 }

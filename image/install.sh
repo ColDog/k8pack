@@ -17,6 +17,11 @@ if [ -z ${FLANNELD_VERSION} ]; then
     exit 1
 fi
 
+if [ -z ${CALICO_VERSION} ]; then
+    echo "CALICO_VERSION is required"
+    exit 1
+fi
+
 mkdir -p /etc/kubernetes/secrets
 mkdir -p /etc/kubernetes/manifests
 mkdir -p /opt/downloads/ /opt/cni/bin/ /opt/bin
@@ -27,12 +32,18 @@ mkdir -p /etc/logrotate.d/
 hyperkube="quay.io/coreos/hyperkube:${K8S_VERSION}_coreos.0"
 docker pull $hyperkube
 
+# Calico image.
+calico_image="quay.io/calico/node:$CALICO_VERSION"
+docker pull $calico_image
+
 # Create versions file.
 cat > /etc/kubernetes/versions.env <<EOF
 HYPERKUBE_IMAGE=$hyperkube
+CALICO_IMAGE=$calico_image
 FLANNELD_VERSION=$FLANNELD_VERSION
 K8S_VERSION=$K8S_VERSION
 CNI_VERSION=$CNI_VERSION
+CALICO_VERSION=$CALICO_VERSION
 EOF
 
 # Downloads.
@@ -51,6 +62,16 @@ mv flanneld /opt/bin/
 curl -L -o cni.tgz https://github.com/containernetworking/cni/releases/download/${CNI_VERSION}/cni-amd64-${CNI_VERSION}.tgz
 tar -xvf cni.tgz -C /opt/cni/bin/
 rm cni.tgz
+
+# Calico CNI binaries.
+wget -N -P /opt/cni/bin https://github.com/projectcalico/cni-plugin/releases/download/v1.10.0/calico
+wget -N -P /opt/cni/bin https://github.com/projectcalico/cni-plugin/releases/download/v1.10.0/calico-ipam
+chmod +x /opt/cni/bin/calico /opt/cni/bin/calico-ipam
+
+# Loopback CNI binary.
+wget https://github.com/containernetworking/cni/releases/download/v0.3.0/cni-v0.3.0.tgz
+tar -zxvf cni-v0.3.0.tgz
+sudo cp loopback /opt/cni/bin/
 
 # Kubesetup binary.
 mv /home/core/kubesetup /opt/bin/kubesetup

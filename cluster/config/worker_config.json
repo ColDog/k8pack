@@ -8,7 +8,8 @@
 
     "Certs": [
         {"CN": "kubelet", "Org": ["kube-system"], "IPs": ["{{ .LocalIPv4 }}"], "DNS": ["{{ .LocalHostname }}"]},
-        {"CN": "kubeproxy", "Org": ["kube-system"], "IPs": ["127.0.0.1"]}
+        {"CN": "kubeproxy", "Org": ["kube-system"], "IPs": ["127.0.0.1"]},
+        {"CN": "calico", "Org": ["kube-system"], "IPs": ["127.0.0.1"]}
     ],
 
     "Secrets": [
@@ -38,21 +39,15 @@
     "Systemd": [
         {"Name": "kubelet.service", "Start": true, "URI": "systemd/kubelet.service"},
         {"Name": "kubeproxy.service", "Start": true, "URI": "systemd/kubeproxy.service"},
-        {"Name": "flannel.service", "Start": true, "URI": "systemd/flannel.service"},
+        {"Name": "${network_plugin}.service", "Start": true, "URI": "systemd/${network_plugin}.service"},
         {"Name": "logrotate.service", "Start": false, "URI": "systemd/logrotate.service"},
         {"Name": "logrotate.timer", "Start": true, "URI": "systemd/logrotate.timer"},
         {"Name": "logger.service", "Start": true, "URI": "systemd/logger.service"}
     ],
 
     "CNIConfig": {
-        "Name": "10-flannel.conf",
-        "Config": {
-            "name": "podnet",
-            "type": "flannel",
-            "delegate": {
-                "isDefaultGateway": true
-            }
-        }
+        "Name": "10-${network_plugin}.conf",
+        "Config": ${cni_config}
     },
 
     "CloudConfig": {

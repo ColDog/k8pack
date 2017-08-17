@@ -18,6 +18,10 @@ variable "etcd_urls" {
   type = "list"
 }
 
+variable "network_plugin" {
+  default = "flannel"
+}
+
 data "aws_region" "current" {
   current = true
 }

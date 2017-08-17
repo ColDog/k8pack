@@ -1,0 +1,32 @@
+[Unit]
+Description=calico node
+After=docker.service
+Requires=docker.service
+
+[Service]
+EnvironmentFile=/etc/kubernetes/versions.env
+User=root
+PermissionsStartOnly=true
+ExecStartPre=-/usr/bin/docker stop calico.service
+ExecStartPre=-/usr/bin/docker rm calico.service
+ExecStart=/usr/bin/docker run --net=host --privileged --name=calico.service \
+  -e ETCD_ENDPOINTS={{ .ETCDNodeURLs }} \
+  -e NODENAME=${HOSTNAME} \
+  -e CALICO_IPV4POOL_CIDR={{ .PodCidr }} \
+  -e CALICO_IPV4POOL_IPIP=cross-subnet \
+  -e CALICO_LIBNETWORK_ENABLED=true \
+  -e CALICO_NETWORKING_BACKEND=bird \
+  -e FELIX_DEFAULTENDPOINTTOHOSTACTION=ACCEPT \
+  -v /etc/kubernetes:/etc/kubernetes \
+  -v /var/run/calico:/var/run/calico \
+  -v /lib/modules:/lib/modules \
+  -v /run/docker/plugins:/run/docker/plugins \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /var/log/calico:/var/log/calico \
+  ${CALICO_IMAGE}
+ExecStop=/usr/bin/docker stop calico.service
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

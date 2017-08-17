@@ -21,17 +21,20 @@ module "cluster" {
   asset_bucket = "${var.asset_bucket}"
   ssh_key      = "${var.ssh_key}"
 
-  master_instance_size = "t2.medium"
+  network_plugin = "calico"
+
+  master_instance_size = "t2.small"
   master_instances {
     min     = 0
     max     = 1
     desired = 1
   }
 
-  worker_instance_size = "t2.medium"
+  worker_instance_size = "t2.small"
   worker_instances {
     min     = 0
     max     = 2
-    desired = 2
+    desired = 1
   }
+
 }
