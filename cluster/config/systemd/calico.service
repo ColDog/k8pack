@@ -5,14 +5,13 @@ Requires=docker.service
 
 [Service]
 EnvironmentFile=/etc/kubernetes/versions.env
-Environment=ETCD_ENDPOINTS={{ .ETCDNodeURLs }}
 User=root
 PermissionsStartOnly=true
-ExecStartPre=-/usr/bin/cat <<EOF | /usr/bin/docker run -i --net=host --rm calico/ctl apply -f -
+ExecStartPre=-/usr/bin/cat <<EOF | /usr/bin/docker run -e ETCD_ENDPOINTS={{ .ETCDNodeURLs }} -i --net=host --rm calico/ctl apply -f -
 apiVersion: v1
 kind: ipPool
 metadata:
-  cidr: 10.2.0.0/16
+  cidr: {{ .PodCidr }}
 spec:
   ipip:
     enabled: true

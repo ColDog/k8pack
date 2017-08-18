@@ -2,7 +2,7 @@
     "name": "calico-k8s-network",
     "type": "calico",
     "etcd_endpoints": "${etcd_urls}",
-    "log_level": "debug",
+    "log_level": "info",
     "ipam": {
         "type": "host-local",
         "subnet": "usePodCidr"
